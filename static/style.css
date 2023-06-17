@@ -1,0 +1,47 @@
+html {
+  font-family: 'Geologica', sans-serif;
+  display: inline-block;
+  text-align: center;
+}
+
+h1 {
+  font-family: 'Anton';
+  font-size: 2.0rem;
+  font-weight: 700;
+  color: rgb(255, 255, 255);
+}
+
+p {
+  font-size: 1.4rem;
+  font-weight: 550;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #021153;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  text-align: center;
+}
+
+.card-title {
+  font-family: 'Geologica', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.chart-container {
+  height: 200px;
+  width: 100%;
+}

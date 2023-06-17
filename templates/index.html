@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ESP IOT DASHBOARD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href='/static/style.css' />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var temperatureChart, humidityChart;
+
+        // Hàm để tạo biểu đồ
+        function createChart() {
+            temperatureChart = new Chart($('#temperatureChart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '°C',
+                        data: [],
+                        borderColor: 'rgba(255, 60, 60, 0.8)',
+                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    title: {
+                        display: true,
+                        text: 'Temperature'
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Time'
+                            },
+
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Temperature (°C)'
+                            },
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 40
+                            }
+                        }]
+                    }
+                }
+            });
+
+            humidityChart = new Chart($('#humidityChart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '%',
+                        data: [],
+                        borderColor: 'rgba(40, 170, 244, 0.8)',
+                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    title: {
+                        display: true,
+                        text: 'Humidity'
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Time'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Humidity (%)'
+                            },
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        // Hàm để cập nhật dữ liệu trên biểu đồ
+        function updateChart() {
+            $.ajax({
+                url: '/get_data', // Đường dẫn đến API để lấy dữ liệu mới nhất
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var time = new Date().toLocaleTimeString();
+                    temperatureChart.data.labels.push(time);
+                    humidityChart.data.labels.push(time);
+                    temperatureChart.data.datasets[0].data.push(data.temperature);
+                    humidityChart.data.datasets[0].data.push(data.humidity);
+                    temperatureChart.update();
+                    humidityChart.update();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            createChart(); // Tạo biểu đồ khi tải trang
+            setInterval(updateChart, 10000); // Tự động cập nhật sau mỗi 10 giây
+        });
+    </script>
+</head>
+
+<body>
+    <div class="topnav">
+        <h1>IOT DASHBOARD</h1>
+        <div class="card-grid">
+            <div class="card">
+                <p class="card-title">
+                    <font color=#dc2d2d>Temperature&#127777
+                </p>
+                <canvas id="temperatureChart" class="chart-container"></canvas>
+            </div>
+            <div class="card">
+                <p class="card-title">
+                    <font color=#39c4ff>Humidity&#x1f4a7
+                </p>
+                <canvas id="humidityChart" class="chart-container"></canvas>
+            </div>
+        </div>
+        <div id="clock"></div>
+
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var year = now.getFullYear();
+
+            var clockHtml = "<h1>"+ hours + ":" + minutes + ":" + seconds + "<h1>"+ day + "/" + month + "/" + year +"</h1>";
+            document.getElementById("clock").innerHTML = clockHtml;
+        }
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+
+</html>
